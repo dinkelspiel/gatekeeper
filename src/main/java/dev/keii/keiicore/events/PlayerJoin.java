@@ -81,6 +81,10 @@ public class PlayerJoin implements Listener {
                 if(sendMessages) {
                     Bukkit.broadcast(Component.text(nickname + " joined the server").color(NamedTextColor.YELLOW));
                 }
+
+                String resourcePackURL = "https://github.com/shykeiichi/plugin-resourcepack/raw/main/release.zip";
+                player.setResourcePack(resourcePackURL);
+                
                 return;
             }
 
