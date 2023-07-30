@@ -279,13 +279,14 @@ public class InventoryMap implements InventoryHolder {
         this.player = player;
     }
 
-    public static final Component Name = Component.text("\uF809\uEff3\uF80B\uF80B\uF80A\uF809\uF806").color(NamedTextColor.WHITE);
+    public static final String Name = "\uF809\uEff3\uF80B\uF80B\uF80A\uF809\uF806";
 
     public char getLetterOfBiome(Block block)
     {
-        if(block.getType() == Material.WATER || block.getType() == Material.ICE || block.getType() == Material.PACKED_ICE) {
+        Material highestBlockType = block.getWorld().getBlockAt(block.getX(), block.getWorld().getHighestBlockYAt(block.getLocation()), block.getZ()).getType();
+        if(highestBlockType == Material.WATER || highestBlockType == Material.ICE || highestBlockType == Material.PACKED_ICE) {
             return 'w';
-        } else if(block.getType() == Material.SAND) {
+        } else if(highestBlockType == Material.SAND) {
             return 's';
         }
 
@@ -412,7 +413,7 @@ public class InventoryMap implements InventoryHolder {
 
         Vector2i claimPower = getClaimPower();
 
-        Inventory mapInventory = Bukkit.createInventory(null, 54, Component.text(Name + getDirectionMarker()).append(Component.text(" Power " + claimPower.x + "/" + claimPower.y).color(NamedTextColor.BLACK)));
+        Inventory mapInventory = Bukkit.createInventory(this, 54, Component.text(Name + getDirectionMarker()).color(NamedTextColor.WHITE).append(Component.text(" Power " + claimPower.x + "/" + claimPower.y).color(NamedTextColor.BLACK)));
 
         for(int i = 0; i < 54; i++)
         {

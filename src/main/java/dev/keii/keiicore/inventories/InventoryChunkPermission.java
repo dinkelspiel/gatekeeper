@@ -44,7 +44,7 @@ public class InventoryChunkPermission implements InventoryHolder {
     @Override
     public @NotNull Inventory getInventory()
     {
-        Inventory inventory = Bukkit.createInventory(null, 27, Name);
+        Inventory inventory = Bukkit.createInventory(this, 27, Name);
 
         try {
             Connection connection = DatabaseConnector.getConnection();
@@ -99,7 +99,7 @@ public class InventoryChunkPermission implements InventoryHolder {
                 }
 
                 meta.displayName(Component.text(username).color(NamedTextColor.YELLOW));
-                List<Component> lore =  getChunkPermissions(claimPermissionEveryoneResultSet);
+                List<Component> lore = getChunkPermissions(claimPermissionResultSet);
                 lore.add(Component.text("User: " + claimPermissionResultSet.getInt("user_id")));
                 meta.setCustomModelData(1001);
                 meta.lore(lore);

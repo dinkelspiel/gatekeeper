@@ -42,6 +42,7 @@ public final class KeiiCore extends JavaPlugin {
         pm.registerEvents(new PlayerMove(), this);
         pm.registerEvents(new EntityExplode(), this);
         pm.registerEvents(new PlayerChat(), this);
+        pm.registerEvents(new PlayerResourcePack(), this);
     }
 
     public void registerCommands() {

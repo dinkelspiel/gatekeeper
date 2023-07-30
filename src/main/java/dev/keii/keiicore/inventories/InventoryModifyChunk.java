@@ -28,7 +28,7 @@ public class InventoryModifyChunk implements InventoryHolder {
     @NotNull
     public Inventory getInventory()
     {
-        Inventory inventory = Bukkit.createInventory(null, 27, Name);
+        Inventory inventory = Bukkit.createInventory(this, 27, Name);
 
         for(int i = 0; i < 27; i++)
         {

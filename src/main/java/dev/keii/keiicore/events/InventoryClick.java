@@ -8,11 +8,13 @@ import dev.keii.keiicore.inventories.InventoryModifyChunk;
 import dev.keii.keiicore.inventories.InventoryModifyChunkPermission;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.joml.Vector2i;
 
@@ -28,9 +30,9 @@ public class InventoryClick implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event)
     {
-        InventoryHolder holder = Objects.requireNonNull(event.getClickedInventory()).getHolder();
+        Inventory inventory = event.getInventory();
 
-        if(holder instanceof InventoryMap) {
+        if(inventory.getHolder() instanceof InventoryMap) {
             event.setCancelled(true);
             Player player = (Player)event.getWhoClicked();
 
@@ -73,7 +75,7 @@ public class InventoryClick implements Listener {
                 InventoryMap map = new InventoryMap(player);
                 player.openInventory(map.getInventory());
             }
-        } else if(holder instanceof InventoryModifyChunk) {
+        } else if(inventory.getHolder() instanceof InventoryModifyChunk) {
             event.setCancelled(true);
 
             int slot = event.getSlot();
@@ -124,7 +126,7 @@ public class InventoryClick implements Listener {
                 player.openInventory(cp.getInventory());
             }
 
-        } else if(holder instanceof InventoryChunkPermission)
+        } else if(inventory.getHolder() instanceof InventoryChunkPermission)
         {
             event.setCancelled(true);
 
@@ -166,7 +168,7 @@ public class InventoryClick implements Listener {
                 player.sendMessage(Component.text("Type name of player you wish to add permissions for in chat!").color(NamedTextColor.YELLOW));
                 player.closeInventory();
             }
-        } else if(holder instanceof InventoryModifyChunkPermission)
+        } else if(inventory.getHolder() instanceof InventoryModifyChunkPermission)
         {
             event.setCancelled(true);
 

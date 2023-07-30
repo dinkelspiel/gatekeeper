@@ -33,7 +33,7 @@ public class InventoryModifyChunkPermission implements InventoryHolder {
     @Override
     public @NotNull Inventory getInventory()
     {
-        Inventory inventory = Bukkit.createInventory(null, 27, Name.append(Component.text(Name + (uuid != null ? User.getNicknameFromUUID(uuid) : "Everyone") + "'s permissions").color(NamedTextColor.DARK_GRAY)));
+        Inventory inventory = Bukkit.createInventory(this, 27, Name.append(Component.text((uuid != null ? User.getNicknameFromUUID(uuid) : "Everyone") + "'s permissions").color(NamedTextColor.DARK_GRAY)));
 
         if(uuid != null) {
             Bukkit.getConsoleSender().sendMessage(Component.text(uuid));
