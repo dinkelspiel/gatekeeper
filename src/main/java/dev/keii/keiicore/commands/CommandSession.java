@@ -12,9 +12,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommandSession implements CommandExecutor {
 
-    // This method is called, when somebody uses our command
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, String[] args) {
+        if(!KeiiCore.config.Invite)
+        {
+            sender.sendMessage(Component.text("Invites are not enabled on this server").color(NamedTextColor.RED));
+            return true;
+        }
+
         if(!(sender instanceof Player)) {
             sender.sendMessage("§cYou must run this command as player!");
             return false;

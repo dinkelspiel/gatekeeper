@@ -20,6 +20,16 @@ import java.util.Set;
 public class PlayerJoin implements Listener {
     public static void loginUser(Player player, boolean sendMessages)
     {
+        if(KeiiCore.config.Claims) {
+            String resourcePackURL = "https://github.com/shykeiichi/plugin-resourcepack/raw/main/release.zip";
+            player.setResourcePack(resourcePackURL);
+        }
+
+        if(!KeiiCore.config.Invite)
+        {
+            return;
+        }
+
         OkHttpClient client = new OkHttpClient();
 
         String jsonData = "{\"uuid\": \"" + player.getUniqueId() + "\"}";
@@ -30,7 +40,8 @@ public class PlayerJoin implements Listener {
         // Create the request body with the JSON data and media type
         RequestBody requestBody = RequestBody.create(jsonData, mediaType);
 
-        String url = "https://mc.keii.dev/api/auth/login";
+//        String url = "https://mc.keii.dev/api/auth/login";
+        String url = KeiiCore.config.ApiUrl + "/api/auth/login";
 
         Request request = new Request.Builder()
                 .url(url)

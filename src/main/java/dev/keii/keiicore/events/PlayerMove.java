@@ -1,5 +1,6 @@
 package dev.keii.keiicore.events;
 
+import dev.keii.keiicore.KeiiCore;
 import dev.keii.keiicore.PlayerChunk;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -11,6 +12,11 @@ public class PlayerMove implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event)
     {
+        if(!KeiiCore.config.Claims)
+        {
+            return;
+        }
+
         Player player = event.getPlayer();
         if (!event.getFrom().getChunk().equals(event.getTo().getChunk())) {
             if(PlayerChunk.getPlayerOwnsChunk(player, event.getTo().getChunk()) && !PlayerChunk.getPlayerOwnsChunk(player, event.getFrom().getChunk())) {

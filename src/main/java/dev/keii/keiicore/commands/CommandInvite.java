@@ -15,9 +15,14 @@ import org.jetbrains.annotations.NotNull;
 
 public class CommandInvite implements CommandExecutor {
 
-    // This method is called, when somebody uses our command
-    @Override
+     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+         if(!KeiiCore.config.Invite)
+         {
+             sender.sendMessage(Component.text("Invites are not enabled on this server").color(NamedTextColor.RED));
+             return true;
+         }
+
         if(!(sender instanceof Player player)) {
             sender.sendMessage(Component.text("You must run this command as player!").color(NamedTextColor.RED));
             return false;
@@ -39,7 +44,8 @@ public class CommandInvite implements CommandExecutor {
         // Create the request body with the JSON data and media type
         RequestBody requestBody = RequestBody.create(jsonData, mediaType);
 
-        String url = "https://mc.keii.dev/api/invite";
+//        String url = "https://mc.keii.dev/api/invite";
+        String url = KeiiCore.config.ApiUrl + "/api/invite";
 
         Request request = new Request.Builder()
                 .url(url)

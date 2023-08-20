@@ -1,5 +1,6 @@
 package dev.keii.keiicore.events;
 
+import dev.keii.keiicore.KeiiCore;
 import dev.keii.keiicore.PlayerChunk;
 import dev.keii.keiicore.error.Success;
 import dev.keii.keiicore.inventories.InventoryChunkPermission;
@@ -20,6 +21,11 @@ public class PlayerChat implements Listener {
     @EventHandler
     public void onPlayerChat(PlayerChatEvent event)
     {
+        if(!KeiiCore.config.Claims)
+        {
+            return;
+        }
+
         Player player = event.getPlayer();
 
         if(chunkListener.get(player.getUniqueId().toString()) == null)

@@ -11,8 +11,8 @@ public class PlayerQuit implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event)
     {
-        Player player = event.getPlayer();
+//        Player player = event.getPlayer();
 
-        Bukkit.broadcast(Component.text(player.getStatistic(Statistic.PLAY_ONE_MINUTE)));
+//        Bukkit.broadcast(Component.text(player.getStatistic(Statistic.PLAY_ONE_MINUTE)));
     }
 }

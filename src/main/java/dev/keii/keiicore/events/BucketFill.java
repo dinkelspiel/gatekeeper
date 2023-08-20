@@ -1,5 +1,6 @@
 package dev.keii.keiicore.events;
 
+import dev.keii.keiicore.KeiiCore;
 import dev.keii.keiicore.PlayerChunk;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -13,6 +14,11 @@ public class BucketFill implements Listener {
     @EventHandler
     public void onBucketFill(PlayerBucketFillEvent event)
     {
+        if(!KeiiCore.config.Claims)
+        {
+            return;
+        }
+
         Player player = event.getPlayer();
         Chunk chunk = player.getChunk();
 

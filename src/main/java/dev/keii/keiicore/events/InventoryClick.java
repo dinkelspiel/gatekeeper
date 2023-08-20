@@ -36,6 +36,11 @@ public class InventoryClick implements Listener {
             event.setCancelled(true);
             Player player = (Player)event.getWhoClicked();
 
+            if(event.getCurrentItem() == null)
+            {
+                return;
+            }
+
             List<String> lore = Objects.requireNonNull(event.getCurrentItem()).getLore();
 
             Integer chunkX = null;

@@ -158,6 +158,8 @@ public class PlayerChunk {
             ResultSet sessionResultSet = statement.executeQuery(sessionQuery);
 
             if (!sessionResultSet.next()) {
+                Bukkit.getServer().broadcastMessage("NO USER");
+
                 sessionResultSet.close();
                 statement.close();
                 connection.close();
@@ -202,6 +204,7 @@ public class PlayerChunk {
             connection.close();
             return true;
         } catch (SQLException e) {
+            Bukkit.getServer().broadcastMessage("DB ERROR" + e.getMessage());
             e.printStackTrace();
         }
 
