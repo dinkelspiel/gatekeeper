@@ -1,6 +1,6 @@
-name: KeiiCore
+name: KeiiGatekeeper
 version: '${project.version}'
-main: dev.keii.gatekeeper.gatekeeper
+main: dev.keii.gatekeeper.Gatekeeper
 api-version: '1.20'
 
 commands:

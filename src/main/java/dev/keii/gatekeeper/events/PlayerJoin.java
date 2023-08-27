@@ -47,6 +47,10 @@ public class PlayerJoin implements Listener {
                 createUser.setInt(2, invite.getInt("user_id"));
                 createUser.execute();
 
+                PreparedStatement updateInvite = connection.prepareStatement("UPDATE invite SET used = 1 WHERE invite_uuid = ?");
+                updateInvite.setString(1, player.getUniqueId().toString());
+                updateInvite.execute();
+
                 if(showMessages)
                     Bukkit.getServer().broadcast(Component.text("Everyone welcome " + player.getName() + " to the server").color(NamedTextColor.YELLOW));
 

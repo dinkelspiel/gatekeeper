@@ -121,7 +121,7 @@ public class CommandInvite implements CommandExecutor {
                 return true;
             }
 
-            PreparedStatement createInvite = connection.prepareStatement("INSERT INTO invites(user_id, invite_uuid) VALUES(?, ?, ?)");
+            PreparedStatement createInvite = connection.prepareStatement("INSERT INTO invites(user_id, invite_uuid) VALUES(?, ?)");
             createInvite.setInt(1, invitor.getInt("id"));
             createInvite.setString(2, playerUUID);
             createInvite.execute();
