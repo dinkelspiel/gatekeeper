@@ -1,8 +1,6 @@
-package dev.keii.keiicore.events;
+package dev.keii.gatekeeper.events;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
-import org.bukkit.Statistic;
-import org.bukkit.entity.Player;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -11,8 +9,6 @@ public class PlayerQuit implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event)
     {
-//        Player player = event.getPlayer();
-
-//        Bukkit.broadcast(Component.text(player.getStatistic(Statistic.PLAY_ONE_MINUTE)));
+        event.quitMessage(Component.text(event.getPlayer().getName() + " left the server").color(NamedTextColor.YELLOW));
     }
 }

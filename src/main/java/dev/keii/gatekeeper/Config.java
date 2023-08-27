@@ -1,4 +1,4 @@
-package dev.keii.keiicore;
+package dev.keii.gatekeeper;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -7,11 +7,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 
 public class Config {
-    public boolean Claims;
-    public boolean Invite;
-
-    public String ApiUrl;
-
     public String DbUrl;
     public String DbName;
     public String DbUser;
@@ -20,26 +15,14 @@ public class Config {
 
     public void fileConfigToConfig(FileConfiguration config)
     {
-        Claims = config.getBoolean("claims");
-        Invite = config.getBoolean("invite");
-
-        Bukkit.broadcastMessage(String.valueOf(config.getBoolean("invite")));
-
         DbUrl = config.getString("dbUrl");
         DbName = config.getString("dbName");
         DbUser = config.getString("dbUser");
         DbPassword = config.getString("dbPassword");
-
-        ApiUrl = config.getString("apiUrl");
     }
 
     public void loadConfig() {
-        FileConfiguration config = KeiiCore.getInstance().getConfig();
-
-        if(config.getString("claims") == null)
-            config.set("claims", true);
-        if(config.getString("invite") == null)
-            config.set("invite", true);
+        FileConfiguration config = Gatekeeper.getInstance().getConfig();
 
         if(config.getString("dbUrl") == null)
             config.set("dbUrl", "jdbc:mysql://localhost:3306/");
@@ -50,13 +33,10 @@ public class Config {
         if(config.getString("dbPassword") == null)
             config.set("dbPassword", "");
 
-        if(config.getString("apiUrl") == null)
-            config.set("apiUrl", "https://example.com");
-
         config.options().copyDefaults(true);
-        KeiiCore.getInstance().saveConfig();
+        Gatekeeper.getInstance().saveConfig();
 
-        config = KeiiCore.getInstance().getConfig();
+        config = Gatekeeper.getInstance().getConfig();
 
         if(config.getString("dbName").isEmpty())
         {

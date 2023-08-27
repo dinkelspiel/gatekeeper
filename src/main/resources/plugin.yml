@@ -1,22 +1,10 @@
 name: KeiiCore
 version: '${project.version}'
-main: dev.keii.keiicore.KeiiCore
+main: dev.keii.gatekeeper.gatekeeper
 api-version: '1.20'
 
 commands:
   invite:
     description: Invite a player to the server
     usage: /invite <Minecraft Username>
-    permission: keii.invite
-  session:
-    description: Gets the user session
-    usage: /session
-    permission: keii.session
-  map:
-    description: Opens the map
-    usage: /map
-    permission: keii.map
-  config:
-    description: Usage of the config
-    usage: /config
-    permission: keii.config
+    permission: keii.gatekeeper.invite
