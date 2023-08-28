@@ -6,7 +6,7 @@
 
     <groupId>dev.keii</groupId>
     <artifactId>Gatekeeper</artifactId>
-    <version>0.2</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Gatekeeper</name>
