@@ -1,7 +1,8 @@
 package dev.keii.gatekeeper.commands;
 
-import dev.keii.gatekeeper.DatabaseConnector;
 import dev.keii.gatekeeper.Gatekeeper;
+import dev.keii.gatekeeper.Invite;
+import dev.keii.gatekeeper.User;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import okhttp3.OkHttpClient;
@@ -18,6 +19,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 
 public class CommandInvite implements CommandExecutor {
@@ -52,6 +55,16 @@ public class CommandInvite implements CommandExecutor {
             return false;
         }
 
+         if(Gatekeeper.disabled)
+         {
+             sender.sendMessage(Component.text("Gatekeeper is disabled!").color(NamedTextColor.RED));
+             if(player.hasPermission("keii.gatekeeper.reload"))
+             {
+                 sender.sendMessage(Component.text("Run '/gatekeeper reload' to reload the config!").color(NamedTextColor.RED));
+             }
+             return false;
+         }
+
          if(args.length < 1)
          {
              sender.sendMessage("§cNo username provided");
@@ -65,7 +78,6 @@ public class CommandInvite implements CommandExecutor {
                  .url("https://playerdb.co/api/player/minecraft/" + args[0])
                  .build();
 
-         String playerUsername;
          String playerUUID;
 
          try {
@@ -74,7 +86,6 @@ public class CommandInvite implements CommandExecutor {
              ApiResponse apiResponse = gson.fromJson(responseBody, ApiResponse.class);
              if (apiResponse.success) {
                  PlayerData playerData = apiResponse.data.player;
-                 playerUsername = playerData.username;
                  playerUUID = playerData.id;
              } else {
                  player.sendMessage(Component.text("Error while inviting user: " + apiResponse.message).color(NamedTextColor.RED));
@@ -86,59 +97,45 @@ public class CommandInvite implements CommandExecutor {
              return true;
          }
 
-         try {
-            Connection connection = DatabaseConnector.getConnection();
+         User user = null;
+         boolean userExists = false;
 
-            PreparedStatement getInvitor = connection.prepareStatement("SELECT * FROM users WHERE uuid = ?");
-            getInvitor.setString(1, player.getUniqueId().toString());
-
-            ResultSet invitor = getInvitor.executeQuery();
-
-            if(!invitor.next())
+         for(User _user : Gatekeeper.users)
+         {
+            if(Objects.equals(_user.getUuid(), player.getUniqueId().toString()))
             {
-                player.sendMessage(Component.text("No valid user with your uuid! Contact an administrator!").color(NamedTextColor.RED));
-
-                getInvitor.close();
-                invitor.close();
-
-                return true;
+                user = _user;
+                userExists = true;
+                break;
             }
+         }
 
-            PreparedStatement getInvite = connection.prepareStatement("SELECT * FROM invites WHERE invite_uuid = ?");
-            getInvite.setString(1, playerUUID);
+         if(!userExists)
+         {
+             player.sendMessage(Component.text("No valid user with your uuid! Contact an administrator!").color(NamedTextColor.RED));
+             return true;
+         }
 
-            ResultSet invite = getInvite.executeQuery();
+         boolean inviteExists = false;
 
-            if(invite.next())
-            {
-                player.sendMessage(Component.text("An invite already exists for this user").color(NamedTextColor.RED));
+         for(Invite invite : Gatekeeper.invites)
+         {
+             if(Objects.equals(invite.getInviteUUID(), playerUUID))
+             {
+                 inviteExists = true;
+                 break;
+             }
+         }
 
-                getInvitor.close();
-                invitor.close();
-                getInvite.close();
-                invite.close();
+         if(inviteExists)
+         {
+             player.sendMessage(Component.text("An invite already exists for this user!").color(NamedTextColor.RED));
+             return true;
+         }
 
-                return true;
-            }
+         Gatekeeper.invites.add(new Invite(user.getId(), playerUUID, false));
+         player.sendMessage(Component.text("Invited user").color(NamedTextColor.GREEN));
 
-            PreparedStatement createInvite = connection.prepareStatement("INSERT INTO invites(user_id, invite_uuid) VALUES(?, ?)");
-            createInvite.setInt(1, invitor.getInt("id"));
-            createInvite.setString(2, playerUUID);
-            createInvite.execute();
-
-            player.sendMessage(Component.text("Invited user").color(NamedTextColor.GREEN));
-
-            getInvitor.close();
-            invitor.close();
-            getInvite.close();
-            invite.close();
-            createInvite.close();
-
-            return true;
-        } catch(SQLException e)
-        {
-            player.sendMessage(Component.text("Error while inviting user: " + e.getMessage()).color(NamedTextColor.RED));
-            return true;
-        }
+         return true;
     }
 }

@@ -1,6 +1,8 @@
 package dev.keii.gatekeeper.events;
 
-import dev.keii.gatekeeper.DatabaseConnector;
+import dev.keii.gatekeeper.Invite;
+import dev.keii.gatekeeper.Gatekeeper;
+import dev.keii.gatekeeper.User;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -9,79 +11,79 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 
-import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Objects;
 
 public class PlayerJoin implements Listener {
-    public static boolean loginUser(Player player, boolean showMessages)
+    public static void loginUser(Player player, boolean showMessages)
     {
-        try {
-            Connection connection = DatabaseConnector.getConnection();
-
-            PreparedStatement getUser = connection.prepareStatement("SELECT * FROM users WHERE uuid = ?");
-            getUser.setString(1, player.getUniqueId().toString());
-
-            ResultSet user = getUser.executeQuery();
-
-            if(!user.next())
+        boolean userExists = false;
+        for(User user : Gatekeeper.users)
+        {
+            if(Objects.equals(user.getUuid(), player.getUniqueId().toString()))
             {
-                PreparedStatement getInvite = connection.prepareStatement("SELECT * FROM invites WHERE invite_uuid = ?");
-                getInvite.setString(1, player.getUniqueId().toString());
+                userExists = true;
+                break;
+            }
+        }
 
-                ResultSet invite = getInvite.executeQuery();
-
-                if(!invite.next())
+        if(!userExists)
+        {
+            boolean inviteExists = false;
+            Invite invite = null;
+            for(Invite _invite : Gatekeeper.invites)
+            {
+                if(Objects.equals(_invite.getInviteUUID(), player.getUniqueId().toString()))
                 {
-                    player.kick(Component.text("You do not have an invite!").color(NamedTextColor.RED));
-
-                    invite.close();
-                    user.close();
-                    getUser.close();
-                    getInvite.close();
-                    connection.close();
-
-                    return false;
+                    invite = _invite;
+                    inviteExists = true;
+                    break;
                 }
-
-                PreparedStatement createUser = connection.prepareStatement("INSERT INTO users(uuid, recommended_by) VALUES(?, ?)");
-                createUser.setString(1, player.getUniqueId().toString());
-                createUser.setInt(2, invite.getInt("user_id"));
-                createUser.execute();
-
-                PreparedStatement updateInvite = connection.prepareStatement("UPDATE invite SET used = 1 WHERE invite_uuid = ?");
-                updateInvite.setString(1, player.getUniqueId().toString());
-                updateInvite.execute();
-
-                if(showMessages)
-                    Bukkit.getServer().broadcast(Component.text("Everyone welcome " + player.getName() + " to the server").color(NamedTextColor.YELLOW));
-
-                getUser.close();
-                user.close();;
-                getInvite.close();
-                invite.close();
-                createUser.close();
-                connection.close();
-
-                return true;
             }
 
+            if(!inviteExists)
+            {
+                player.kick(Component.text("You do not have an invite!").color(NamedTextColor.RED));
+                return;
+            }
+
+            User invitor = null;
+            for(User user : Gatekeeper.users)
+            {
+                if(user.getId() == invite.getUserId())
+                {
+                    invitor = user;
+                    break;
+                }
+            }
+
+            if(invitor == null)
+            {
+                player.kick(Component.text("Invitor doesn't exist contact an admin!").color(NamedTextColor.RED));
+                return;
+            }
+
+            Gatekeeper.users.add(new User(++Gatekeeper.usersAutoIncrement, player.getUniqueId().toString(), invitor.getId()));
+
             if(showMessages)
-                Bukkit.getServer().broadcast(Component.text(player.getName() + " joined the server").color(NamedTextColor.YELLOW));
+                Bukkit.getServer().broadcast(Component.text("Everyone welcome " + player.getName() + " to the server").color(NamedTextColor.YELLOW));
 
-            getUser.close();
-            user.close();;
-            connection.close();
-        } catch(SQLException e)
-        {
-            player.kick(Component.text("Login error!").color(NamedTextColor.RED).appendNewline().append(Component.text(e.getMessage()).color(NamedTextColor.RED)));
-
-            return false;
+            return;
         }
-        return false;
+
+        if(showMessages)
+            Bukkit.getServer().broadcast(Component.text(player.getName() + " joined the server").color(NamedTextColor.YELLOW));
+
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event)
     {
+        if(Gatekeeper.disabled)
+        {
+            return;
+        }
+
         Player player = event.getPlayer();
         event.joinMessage(Component.text(""));
         loginUser(player, true);

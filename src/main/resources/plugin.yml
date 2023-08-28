@@ -1,4 +1,4 @@
-name: KeiiGatekeeper
+name: Gatekeeper
 version: '${project.version}'
 main: dev.keii.gatekeeper.Gatekeeper
 api-version: '1.20'
@@ -8,3 +8,7 @@ commands:
     description: Invite a player to the server
     usage: /invite <Minecraft Username>
     permission: keii.gatekeeper.invite
+  gatekeeper:
+    description: Gatekeeper plugin
+    usage: /gatekeeper [info,help,save,load]
+    permission: keii.gatekeeper
